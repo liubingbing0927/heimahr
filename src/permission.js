@@ -4,7 +4,7 @@ import router from './router'
 import store from './store'
 
 const whiteList = ['/login', '/404']
-router.beforeEach((to, from, next) => {
+router.beforeEach(async(to, from, next) => {
   nProgress.start()// 开启进度条
   // 分两种情况，有token和没有token
   if (store.getters.token) {
@@ -15,6 +15,11 @@ router.beforeEach((to, from, next) => {
       next('/')
       nProgress.done()
     } else {
+      // 当获取不到数据时，就去获取，否则不用重新获取
+      if (!store.getters.userId) {
+        // 需要异步执行，当获取资料成功后在跳转
+        await store.dispatch('user/getDetail')
+      }
       next()
     }
   } else {

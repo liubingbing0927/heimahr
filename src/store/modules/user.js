@@ -1,7 +1,8 @@
 import { setToken, getToken, removeToken } from '@/utils/auth'
-import { login } from '@/api/user'
+import { login, userDetail } from '@/api/user'
 const state = {
-  token: getToken()
+  token: getToken(),
+  userinfo: {}
 }
 
 const mutations = {
@@ -15,6 +16,10 @@ const mutations = {
   removeuserToken(state) {
     state.token = ''
     removeToken()
+  },
+  setuserinfo(state, payload) {
+    state.userinfo = payload
+    console.log(state.userinfo)
   }
 }
 
@@ -25,6 +30,13 @@ const actions = {
     const res = await login(value)
     console.log(res)
     cxt.commit('setuserToken', res)
+  },
+  // 调用接口请求
+  async getDetail(cxt) {
+    // res就是成功后得到的基本资料
+    const res = await userDetail()
+    // console.log(res)
+    cxt.commit('setuserinfo', res)
   }
 }
 
