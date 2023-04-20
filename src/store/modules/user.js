@@ -1,7 +1,7 @@
 import { setToken, getToken, removeToken } from '@/utils/auth'
-
+import { login } from '@/api/user'
 const state = {
-  token: getToken() || ''
+  token: getToken()
 }
 
 const mutations = {
@@ -19,10 +19,12 @@ const mutations = {
 }
 
 const actions = {
-  login(cxt, value) {
+  async login(cxt, value) {
     // 获取请求后得到token，将得到的token存起来
-    console.log(value)
-    cxt.commit('setuserToken', 1234)
+    // 发送login请求
+    const res = await login(value)
+    console.log(res)
+    cxt.commit('setuserToken', res)
   }
 }
 

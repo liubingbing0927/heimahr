@@ -3,7 +3,7 @@ import store from '@/store'
 import { Message } from 'element-ui'
 const request = axios.create({
   baseURL: process.env.VUE_APP_BASE_API,
-  timeout: 10000
+  timeout: 5000
 })
 
 request.interceptors.request.use(config => {
@@ -20,13 +20,16 @@ request.interceptors.response.use(response => {
   // 先结构出data里面的属性
   const { data, success, message } = response.data
   // 如果success为true时，则代表请求成功，否则则失败
+
   if (success) {
     return data
   } else {
-    Message.error(message)
-    return Promise.error(new Error(message))
+    Message({ type: 'error', message })
+    return Promise.reject(new Error(message))
   }
-}, error => {
-  Message.error(error.message)
+}, async(error) => {
+  Message({ type: 'error', message: error.message })
   return Promise.reject(error)
 })
+
+export default request

@@ -6,12 +6,12 @@
       <el-card shadow="never" class="login-card">
         <!--登录表单-->
         <el-form ref="form" :model="loginform" :rules="rules">
-          <el-form-item prop="account">
-            <el-input v-model="loginform.account" placeholder="请输入账号" />
+          <el-form-item prop="mobile">
+            <el-input v-model="loginform.mobile" placeholder="请输入账号" />
           </el-form-item>
 
           <el-form-item prop="password">
-            <el-input v-model="loginform.password" placeholder="请输入密码" />
+            <el-input v-model="loginform.password" type="password" placeholder="请输入密码" />
           </el-form-item>
 
           <el-form-item prop="ischecked">
@@ -36,9 +36,10 @@ export default {
   data() {
     return {
       loginform: {
-        account: '',
-        password: '',
-        ischecked: false
+        // 判断开发环境是显示默认的账号和密码，生产环境不显示
+        mobile: process.env.NODE_ENV === 'development' ? '13800000002' : '',
+        password: process.env.NODE_ENV === 'development' ? '123456' : '',
+        ischecked: process.env.NODE_ENV === 'development'
       },
       rules: {
         account: [
@@ -62,10 +63,13 @@ export default {
   methods: {
     login() {
       // 点击登录按钮时，校验整个表单
-      this.$refs.form.validate(isok => {
+      this.$refs.form.validate(async(isok) => {
         if (isok) {
           // 当校验成功以后，向user模块发送actions请求
-          this.$store.dispatch('user/login', this.loginform)
+          // 使用await修饰符是因为只有当login登录请求完成才会继续执行下一步
+          await this.$store.dispatch('user/login', this.loginform)
+          // 当登录成功以后，跳转首页
+          this.$router.push('/')
         }
       })
     }

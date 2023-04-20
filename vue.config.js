@@ -36,9 +36,9 @@ module.exports = {
       warnings: false,
       errors: true
     },
-    Proxy: {
-      'api': {
-        target: 'https://heimahr.itheima.net/'
+    proxy: {
+      '/api': {
+        target: 'https://heimahr.itheima.net'
       }
     }
     // before: require('./mock/mock-server.js')
