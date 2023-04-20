@@ -19,7 +19,6 @@ const mutations = {
   },
   setuserinfo(state, payload) {
     state.userinfo = payload
-    console.log(state.userinfo)
   }
 }
 
@@ -37,6 +36,11 @@ const actions = {
     const res = await userDetail()
     // console.log(res)
     cxt.commit('setuserinfo', res)
+  },
+  logout(cxt) {
+    cxt.commit('removeuserToken')
+    // 将用户资料变为空
+    cxt.commit('setuserinfo', {})
   }
 }
 
