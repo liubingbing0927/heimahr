@@ -3,7 +3,8 @@ const getters = {
   device: state => state.app.device,
   token: state => state.user.token,
   userId: state => state.user.userinfo.userId,
-  avatar: state => state.user.avatar,
-  name: state => state.user.name
+  // 获取userinfo中的头像和名称
+  avatar: state => state.user.userinfo.staffPhoto,
+  name: state => state.user.userinfo.username
 }
 export default getters
