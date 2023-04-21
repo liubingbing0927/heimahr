@@ -14,3 +14,12 @@ export function userDetail() {
     url: '/sys/profile'
   })
 }
+
+// 修改密码
+export function changepassword(data) {
+  return request({
+    url: '/sys/user/updatepass',
+    method: 'put',
+    data
+  })
+}

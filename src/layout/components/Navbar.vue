@@ -42,7 +42,8 @@
       </el-dropdown>
     </div>
 
-    <el-dialog title="修改密码" :visible.sync="ishow">
+    <!-- 当点X，关闭弹框时，不会重置表单 -->
+    <el-dialog title="修改密码" :visible.sync="ishow" @close="delbtn">
       <!-- 修改密码表单结构 -->
       <el-form ref="form" label-width="200px" :model="passform" :rules="rules">
         <el-form-item label="旧密码" prop="oldPassword">
@@ -55,8 +56,8 @@
           <el-input v-model="passform.confirmPassword" show-password size="small" />
         </el-form-item>
         <el-form-item>
-          <el-button size="mini">确认修改</el-button>
-          <el-button size="mini">取消</el-button>
+          <el-button size="mini" @click="confirmbtn">确认修改</el-button>
+          <el-button size="mini" @click="delbtn">取消</el-button>
         </el-form-item>
       </el-form>
 
@@ -68,7 +69,7 @@
 import { mapGetters } from 'vuex'
 import Breadcrumb from '@/components/Breadcrumb'
 import Hamburger from '@/components/Hamburger'
-
+import { changepassword } from '@/api/user'
 export default {
   components: {
     Breadcrumb,
@@ -119,6 +120,26 @@ export default {
     },
     updatepassword() {
       this.ishow = true
+    },
+    confirmbtn() {
+      // 先校验表单是否成功
+      this.$refs.form.validate(async(isok) => {
+        if (isok) {
+          // 调用修改密码接口
+          await changepassword(this.passform)
+          // 修改密码成功以后重置表单并提示修改成功,直接调用delbtn函数
+          // this.$refs.form.resetFields()
+          this.$message.success('修改成功')
+          // 弹框隐藏
+          // this.ishow = false
+          this.delbtn()
+        }
+      })
+    },
+    delbtn() {
+      // 点击取消是，重置表单，弹框隐藏
+      this.$refs.form.resetFields()
+      this.ishow = false
     }
   }
 }
