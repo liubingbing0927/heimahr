@@ -31,7 +31,7 @@
           </a>
           <a
             target="_blank"
-            href="https://panjiachen.github.io/vue-element-admin-site/#/"
+            @click="updatepassword"
           >
             <el-dropdown-item>修改密码</el-dropdown-item>
           </a>
@@ -41,6 +41,26 @@
         </el-dropdown-menu>
       </el-dropdown>
     </div>
+
+    <el-dialog title="修改密码" :visible.sync="ishow">
+      <!-- 修改密码表单结构 -->
+      <el-form ref="form" label-width="200px" :model="passform" :rules="rules">
+        <el-form-item label="旧密码" prop="oldPassword">
+          <el-input v-model="passform.oldPassword" show-password size="small" />
+        </el-form-item>
+        <el-form-item label="新密码" prop="newPassword">
+          <el-input v-model="passform.newPassword" show-password size="small" />
+        </el-form-item>
+        <el-form-item label="重复密码" prop="confirmPassword">
+          <el-input v-model="passform.confirmPassword" show-password size="small" />
+        </el-form-item>
+        <el-form-item>
+          <el-button size="mini">确认修改</el-button>
+          <el-button size="mini">取消</el-button>
+        </el-form-item>
+      </el-form>
+
+    </el-dialog>
   </div>
 </template>
 
@@ -54,6 +74,37 @@ export default {
     Breadcrumb,
     Hamburger
   },
+  data() {
+    return {
+      ishow: false,
+      passform: {
+        oldPassword: '',
+        newPassword: '',
+        confirmPassword: ''
+      },
+      rules: {
+        oldPassword: [
+          { required: true, message: '旧密码不能为空', trigger: 'blur' }
+        ],
+        newPassword: [
+          { required: true, message: '新密码不能为空', trigger: 'blur' },
+          { min: 5, max: 10, message: '长度要求在5~10个字符', trigger: 'blur' }
+        ],
+        confirmPassword: [
+          { required: true, message: '确认密码不能为空', trigger: 'blur' },
+          //  使用自定义校验判断新密码和重复密码是否相等,使用箭头函数的形式 ，this才指向实例
+          // value是写入的重复密码的值
+          { trigger: 'blur', validator: (rule, value, callback) => {
+            if (this.passform.newPassword === value) {
+              callback()
+            } else {
+              callback(new Error('新密码和重复密码不一致，请重新输入'))
+            }
+          } }
+        ]
+      }
+    }
+  },
   computed: {
     // 获取头像地址和用户名称
     ...mapGetters(['sidebar', 'avatar', 'name'])
@@ -65,6 +116,9 @@ export default {
     async logout() {
       await this.$store.dispatch('user/logout')
       this.$router.push('/login')
+    },
+    updatepassword() {
+      this.ishow = true
     }
   }
 }

@@ -29,7 +29,7 @@ request.interceptors.response.use(response => {
     return Promise.reject(new Error(message))
   }
 }, async(error) => {
-  if (error.response.status === '401') {
+  if (error.response.status === 401) {
     // 向actions提交清除token和用户资料的申请
     await store.dispatch('user/logout')
     // 然后跳转到登录页
