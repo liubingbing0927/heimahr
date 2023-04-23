@@ -115,3 +115,23 @@ export function param2Obj(url) {
   })
   return obj
 }
+
+// 第一个参数为获得的员工数据，第二个参数为pid与之对应的id属性
+export function transfer(data, id) {
+  // 最后返回的是数组
+  const arr = []
+  // 遍历传入的数组
+  data.forEach(item => {
+    // 判断pid与id对应的,id初始值为0
+    if (item.pid === id) {
+      // 将得到的item追加到数组
+      arr.push(item)// 找到一级
+
+      // 然后把找到的当前一级的id赋值给传入的参数id
+      const children = transfer(data, item.id)
+
+      item.children = children
+    }
+  })
+  return arr
+}
