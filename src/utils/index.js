@@ -130,7 +130,7 @@ export function transfer(data, id) {
       // 然后把找到的当前一级的id赋值给传入的参数id
       const children = transfer(data, item.id)
 
-      item.children = children
+      if (children.length > 0) item.children = children
     }
   })
   return arr

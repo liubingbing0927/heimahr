@@ -5,6 +5,8 @@ const getters = {
   userId: state => state.user.userinfo.userId,
   // 获取userinfo中的头像和名称
   avatar: state => state.user.userinfo.staffPhoto,
-  name: state => state.user.userinfo.username
+  name: state => state.user.userinfo.username,
+  // 获取routes
+  routes: state => state.user.routes
 }
 export default getters

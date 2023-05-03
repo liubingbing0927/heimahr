@@ -1,12 +1,12 @@
 import request from '@/utils/request'
-// 获取员工详情
+// 获取部门列表
 export function departmentDetail() {
   return request({
     url: '/company/department'
   })
 }
 
-// 获取员工负责人信息
+// 获取部门负责人信息
 export function managerDetail() {
   return request({
     url: '/sys/user/simple'

@@ -30,10 +30,10 @@
           <template v-slot="{row}">
             <template v-if="row.isedit">
               <el-button size="mini" type="primary" @click="btnconfirmrole(row)">确定</el-button>
-              <el-button size="mini">取消</el-button>
+              <el-button size="mini" @click="row.isedit = false">取消</el-button>
             </template>
             <template v-else>
-              <el-button size="mini" type="text">分配权限</el-button>
+              <el-button size="mini" type="text" @click="assignpermission(row.id)">分配权限</el-button>
               <!-- 点击编辑时，改变isedit ,将行数据传入函数-->
               <el-button size="mini" type="text" @click="editbtn(row)">编辑</el-button>
               <el-popconfirm title="这是一段内容确定删除吗？" @onConfirm="confirmdel(row.id)">
@@ -77,10 +77,23 @@
         </el-form-item>
       </el-form>
     </el-dialog>
+
+    <el-dialog :visible.sync="showroledialog" title="分配权限">
+      <!-- check-strictly	在显示复选框的情况下，是否严格的遵循父子不互相关联的做法，默认为 false -->
+      <el-tree ref="tree" check-strictly node-key="id" :default-checked-keys="permIds" :data="permissionform" :props="{label:'name'}" default-expand-all show-checkbox />
+      <el-row slot="footer" type="flex" justify="center">
+        <el-col :span="6">
+          <el-button size="mini" type="primary" @click="handleconfirm">确定</el-button>
+          <el-button size="mini" @click="showroledialog = false">取消</el-button>
+        </el-col>
+      </el-row>
+    </el-dialog>
   </div>
 </template>
 <script>
-import { addrole, changerole, delrole, getroleList } from '@/api/role'
+import { addrole, changerole, delrole, getroleList, getroleDetail, assignrolepermission } from '@/api/role'
+import { getpermissonData } from '@/api/permission'
+import { transfer } from '@/utils/index'
 export default {
   name: 'Role',
   data() {
@@ -105,7 +118,11 @@ export default {
         description: [
           { required: true, message: '角色名称不能为空', trigger: 'blur' }
         ]
-      }
+      },
+      showroledialog: false,
+      permissionform: [],
+      currentid: null,
+      permIds: []
     }
   },
   created() {
@@ -183,6 +200,24 @@ export default {
       // 如果删除的是当前页的最后一个数据，则页面减1，重新渲染
       if (this.list.length === 1) this.pageobj.page--
       this.getrole()
+    },
+    async assignpermission(id) {
+      const res = await getpermissonData()
+      // 将数据转为树形
+      this.currentid = id // 存id
+      this.permissionform = transfer(res, 0)
+      const { permIds } = await getroleDetail(id)
+      this.permIds = permIds
+      this.showroledialog = true
+    },
+    async handleconfirm() {
+      // 调用分配权限接口
+      await assignrolepermission({
+        id: this.currentid,
+        permIds: this.$refs.tree.getCheckedKeys()// 因为permIds没有双向绑定，所以无法根据视图更新
+      })
+      this.$message.success('分配角色权限成功')
+      this.showroledialog = false
     }
   }
 }

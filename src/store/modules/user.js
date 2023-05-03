@@ -1,8 +1,11 @@
 import { setToken, getToken, removeToken } from '@/utils/auth'
 import { login, userDetail } from '@/api/user'
+import { constantRoutes } from '@/router'
+import { resetRouter } from '@/router'
 const state = {
   token: getToken(),
-  userinfo: {}
+  userinfo: {},
+  routes: constantRoutes
 }
 
 const mutations = {
@@ -19,6 +22,9 @@ const mutations = {
   },
   setuserinfo(state, payload) {
     state.userinfo = payload
+  },
+  setRoutes(state, newRoutes) {
+    state.routes = [...constantRoutes, ...newRoutes]
   }
 }
 
@@ -36,11 +42,14 @@ const actions = {
     const res = await userDetail()
     // console.log(res)
     cxt.commit('setuserinfo', res)
+    return res
   },
   logout(cxt) {
     cxt.commit('removeuserToken')
     // 将用户资料变为空
     cxt.commit('setuserinfo', {})
+    // 退出登录时清空路由权限
+    resetRouter()
   }
 }
 

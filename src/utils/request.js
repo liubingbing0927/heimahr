@@ -19,6 +19,8 @@ request.interceptors.request.use(config => {
 
 request.interceptors.response.use(response => {
   // 先结构出data里面的属性
+  // 当导出数据为数据流时，就没有data,success,message等数据，需要进行判断
+  if (response.data instanceof Blob) return response.data
   const { data, success, message } = response.data
   // 如果success为true时，则代表请求成功，否则则失败
 
