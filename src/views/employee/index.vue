@@ -150,8 +150,11 @@ export default {
       this.emplyeedatalist()
     },
     changeinput() {
-      this.requestform.page = 1
-      this.emplyeedatalist()
+      clearTimeout(this.timer) // 清理上一次的定时器
+      this.timer = setTimeout(() => {
+        this.requestform.page = 1
+        this.emplyeedatalist()
+      }, 300)
     },
     async exportrole() {
       // 调用导出接口

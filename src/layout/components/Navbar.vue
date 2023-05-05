@@ -31,7 +31,7 @@
           </a>
           <a
             target="_blank"
-            @click="updatepassword"
+            @click.prevent="updatepassword"
           >
             <el-dropdown-item>修改密码</el-dropdown-item>
           </a>

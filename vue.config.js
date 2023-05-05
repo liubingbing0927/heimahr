@@ -52,6 +52,12 @@ module.exports = {
         '@': resolve('src')
       }
     }
+    // // 排除打包
+    // externals: {
+    //   'vue': 'Vue',
+    //   'element-ui': 'ELEMENT',
+    //   'cos-js-sdk-v5': 'COS'
+    // }
   },
   chainWebpack(config) {
     // it can improve the speed of the first screen, it is recommended to turn on preload
